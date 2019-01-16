@@ -119,6 +119,7 @@ extension Logging {
 
     public enum MetadataValue {
         case string(String)
+        case stringConvertible(CustomStringConvertible)
         case dictionary(Metadata)
         case array([Metadata.Value])
     }
@@ -138,7 +139,23 @@ extension Logging.Level: Comparable {
     }
 }
 
-extension Logging.Metadata.Value: Equatable {}
+extension Logging.Metadata.Value: Equatable {
+    public static func ==(lhs: Logging.Metadata.Value, rhs: Logging.Metadata.Value) -> Bool {
+        switch (lhs, rhs) {
+        case (.string(let lhs), .string(let rhs)):
+            return lhs == rhs
+        case (.stringConvertible(let lhs), .stringConvertible(let rhs)):
+            return lhs.description == rhs.description
+        case (.array(let lhs), .array(let rhs)):
+            return lhs == rhs
+        case (.dictionary(let lhs), .dictionary(let rhs)):
+            return lhs == rhs
+        default:
+            return false
+        }
+    }
+
+}
 
 /// Ships with the logging module, used to multiplex to multiple logging handlers
 public final class MultiplexLogging {
@@ -288,6 +305,8 @@ extension Logging.Metadata.Value: CustomStringConvertible {
             return list.map { $0.description }.description
         case .string(let str):
             return str
+        case .stringConvertible(let repr):
+            return repr.description
         }
     }
 }
