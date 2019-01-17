@@ -139,7 +139,7 @@ extension Logging.Level: Comparable {
     }
 }
 
-extension Logging.Metadata.Value: Equatable {
+extension Logging.MetadataValue: Equatable {
     public static func ==(lhs: Logging.Metadata.Value, rhs: Logging.Metadata.Value) -> Bool {
         switch (lhs, rhs) {
         case (.string(let lhs), .string(let rhs)):
